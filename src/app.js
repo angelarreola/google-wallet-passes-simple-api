@@ -3,7 +3,6 @@ const express = require("express");
 // Config
 const cors = require("cors");
 require("dotenv").config();
-// const bodyParser = require("body-parser");
 // Routes
 const walletRoutes = require("./routes/walletRoutes");
 

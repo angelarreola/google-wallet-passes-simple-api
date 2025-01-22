@@ -1,3 +1,5 @@
+//Libs
+const { v4: uuidv4 } = require("uuid"); //! Unique ID for each pass (JUST FOR TESTING)
 // Modules
 const {
   httpClient,
@@ -24,7 +26,7 @@ const createPassClass = async (_req, res) => {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData['adulto']",
+                      fieldPath: "object.textModulesData['adultos']",
                     },
                   ],
                 },
@@ -33,7 +35,7 @@ const createPassClass = async (_req, res) => {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData['niño']",
+                      fieldPath: "object.textModulesData['niños']",
                     },
                   ],
                 },
@@ -42,7 +44,7 @@ const createPassClass = async (_req, res) => {
                 firstValue: {
                   fields: [
                     {
-                      fieldPath: "object.textModulesData['bebe']",
+                      fieldPath: "object.textModulesData['bebes']",
                     },
                   ],
                 },
@@ -97,6 +99,25 @@ const createPassClass = async (_req, res) => {
  ** Create pass for a specific purchase
  */
 const createPassObject = async (req, res) => {
+  const facilitiesDataMap = {
+    gdl: {
+      uri: "https://angelarreola-pruebitas-s3.s3.us-west-1.amazonaws.com/images/gdl_passfooter.jpg",
+      name: "KidZania Guadalajara",
+    },
+    mty: {
+      uri: "https://angelarreola-pruebitas-s3.s3.us-west-1.amazonaws.com/images/mty_passfooter.jpg",
+      name: "KidZania Monterrey",
+    },
+    sfe: {
+      uri: "https://angelarreola-pruebitas-s3.s3.us-west-1.amazonaws.com/images/sfe_passfooter.jpg",
+      name: "KidZania Santa Fe",
+    },
+    cui: {
+      uri: "https://angelarreola-pruebitas-s3.s3.us-west-1.amazonaws.com/images/cui_passfooter.jpg",
+      name: "KidZania Cuicuilco",
+    },
+  };
+
   const {
     folio,
     email,
@@ -109,19 +130,19 @@ const createPassObject = async (req, res) => {
   } = req.body;
 
   const objectSuffix = email.replace(/[^\w.-]/g, "_");
-  const objectId = `${issuerId}.${objectSuffix}.${folio}`;
+  const objectId = `${issuerId}.${objectSuffix}.${folio}-${uuidv4()}`; //! Unique ID for each pass (JUST FOR TESTING)
 
   const kidzaniaObject = {
     id: objectId,
     classId: classId,
     logo: {
       sourceUri: {
-        uri: "https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/pass_google_logo.jpg",
+        uri: "https://angelarreola-pruebitas-s3.s3.us-west-1.amazonaws.com/images/flag.jpg",
       },
       contentDescription: {
         defaultValue: {
           language: "en-US",
-          value: "LOGO_IMAGE_DESCRIPTION",
+          value: "Logo de KidZania",
         },
       },
     },
@@ -134,7 +155,7 @@ const createPassObject = async (req, res) => {
     subheader: {
       defaultValue: {
         language: "en-US",
-        value: facility,
+        value: facilitiesDataMap[facility].name,
       },
     },
     header: {
@@ -145,18 +166,18 @@ const createPassObject = async (req, res) => {
     },
     textModulesData: [
       {
-        id: "adulto",
-        header: "ADULTO",
+        id: "adultos",
+        header: "ADULTOS",
         body: numberOfAdults,
       },
       {
-        id: "niño",
-        header: "NIÑO",
+        id: "niños",
+        header: "NIÑOS",
         body: numberOfChilds,
       },
       {
-        id: "bebe",
-        header: "BEBE",
+        id: "bebes",
+        header: "BEBES",
         body: numberOfInfants,
       },
       {
@@ -170,15 +191,15 @@ const createPassObject = async (req, res) => {
       value: folio,
       alternateText: folio,
     },
-    hexBackgroundColor: "#a30010",
+    hexBackgroundColor: "#980126",
     heroImage: {
       sourceUri: {
-        uri: "https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs3/362540826/original/9b216ebd825491684e96983661d40b7eb4fb53cc/create-stunning-anime-landscape-and-scenery-art.jpg",
+        uri: facilitiesDataMap[facility].uri,
       },
       contentDescription: {
         defaultValue: {
           language: "en-US",
-          value: "HERO_IMAGE_DESCRIPTION",
+          value: facilitiesDataMap[facility].name,
         },
       },
     },
